@@ -5,7 +5,7 @@ use nix::sys::wait::{waitpid, WNOHANG, WUNTRACED, WCONTINUED};
 use nix::errno::{EINTR, ECHILD};
 use nix::Error;
 
-use {ExitStatus, SigNum};
+use {ExitStatus, Signal};
 
 /// A non-blocking iteration over zombie processes
 ///
@@ -76,8 +76,8 @@ pub fn reap_zombies() -> ZombieIterator { ZombieIterator(PhantomData) }
 pub enum ChildEvent {
     /// Child is dead, similar to what returned by `reap_zombies()`
     Death(pid_t, ExitStatus),
-    /// Child is stopped on a signal SigNum
-    Stop(pid_t, SigNum),
+    /// Child is stopped on a signal Signal
+    Stop(pid_t, Signal),
     /// Child is continued (SIGCONT sent)
     Continue(pid_t),
 }

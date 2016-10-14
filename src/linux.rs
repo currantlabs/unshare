@@ -3,7 +3,7 @@ use std::ffi::OsStr;
 use std::path::Path;
 use std::os::unix::io::AsRawFd;
 
-use nix::sys::signal::{SigNum};
+use nix::sys::signal::{Signal};
 
 use ffi_util::ToCString;
 use {Command, Namespace};
@@ -48,7 +48,7 @@ impl Command {
     ///
     /// To reset this behavior use ``allow_daemonize()``.
     ///
-    pub fn set_parent_death_signal(&mut self, sig: SigNum) -> &mut Command {
+    pub fn set_parent_death_signal(&mut self, sig: Signal) -> &mut Command {
         self.config.death_sig = Some(sig);
         self
     }
@@ -134,7 +134,7 @@ impl Command {
         -> &mut Command
     {
         for ns in iter {
-            self.config.namespaces |= ns.to_clone_flag();
+            self.config.namespaces.insert(ns.to_clone_flag());
         }
         self
     }

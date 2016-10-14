@@ -3,7 +3,7 @@ use std::os::unix::io::RawFd;
 
 use nix::Error;
 use nix::sys::wait::waitpid;
-use nix::sys::signal::{SigNum, SIGKILL, kill};
+use nix::sys::signal::{Signal, SIGKILL, kill};
 use nix::errno::EINTR;
 use libc::pid_t;
 
@@ -59,7 +59,7 @@ impl Child {
     }
 
     /// Send arbitrary unix signal to the process
-    pub fn signal(&self, signal: SigNum) -> Result<(), io::Error> {
+    pub fn signal(&self, signal: Signal) -> Result<(), io::Error> {
         // This prevents (somewhat not-reliable) killing some other process
         // with same pid
         if self.status.is_some() {

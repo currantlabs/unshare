@@ -54,7 +54,7 @@ pub use pipe::{PipeReader, PipeWriter};
 pub use namespace::{Namespace};
 pub use idmap::{UidMap, GidMap};
 pub use zombies::{reap_zombies, child_events, ChildEvent};
-pub use nix::sys::signal::SigNum;
+pub use nix::sys::signal::Signal;
 
 use std::ffi::{CString, OsString};
 use std::path::PathBuf;

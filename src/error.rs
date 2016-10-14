@@ -4,7 +4,7 @@ use std::error::Error as StdError;
 use status::ExitStatus;
 
 use nix;
-
+use {Signal};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorCode {
@@ -82,7 +82,7 @@ pub enum Error {
     /// Auxillary command was killed by signal
     ///
     /// Similar to `AuxCommandExited` but when command was killed
-    AuxCommandKilled(i32),
+    AuxCommandKilled(Signal),
     /// Error when calling setpgid function
     SetPGid(i32),
     /// Error when calling setns syscall

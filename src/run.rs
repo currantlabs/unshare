@@ -201,7 +201,6 @@ impl Command {
         let mut wakeup = Some(wakeup);
         let mut wakeup_rd = Some(wakeup_rd);
         let mut errpipe_wr = Some(errpipe_wr);
-        let flags = self.config.namespaces | SIGCHLD as u32;
         let args_slice = &c_args[..];
         let environ_slice = &c_environ[..];
         // We transform all hashmaps into vectors, because iterating over
@@ -230,7 +229,7 @@ impl Command {
                 setns_namespaces: &setns_ns,
             };
             child::child_after_clone(&child_info);
-        }), &mut nstack[..], flags)));
+        }), &mut nstack[..], self.config.namespaces, Some(SIGCHLD as i32))));
         drop(wakeup_rd);
         drop(errpipe_wr); // close pipe so we don't wait for ourself
 

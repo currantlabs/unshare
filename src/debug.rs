@@ -26,7 +26,7 @@ impl Debug for Command {
             try!(write!(fmt, "; pivot_root=({:?};{:?};{})",
                 new, old, unmount));
         }
-        if self.config.namespaces != 0 {
+        if !self.config.namespaces.is_empty() {
             // TODO(tailhook)
         }
         if let Some(ref dir) = self.config.work_dir {

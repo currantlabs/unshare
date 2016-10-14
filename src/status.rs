@@ -1,5 +1,5 @@
 use std::fmt;
-use {SigNum};
+use {Signal};
 
 /// The exit status of a process
 ///
@@ -10,7 +10,7 @@ pub enum ExitStatus {
     /// Process exited normally with some exit code
     Exited(i8),
     /// Process was killed by a signal (bool flag is true when core is dumped)
-    Signaled(SigNum, /* dore dumped */bool)
+    Signaled(Signal, /* dore dumped */bool)
 }
 
 impl ExitStatus {
@@ -23,7 +23,7 @@ impl ExitStatus {
             &ExitStatus::Signaled(_, _) => None,
         }
     }
-    pub fn signal(&self) -> Option<i32> {
+    pub fn signal(&self) -> Option<Signal> {
         match self {
             &ExitStatus::Exited(_) => None,
             &ExitStatus::Signaled(sig, _) => Some(sig),
@@ -37,22 +37,23 @@ impl fmt::Display for ExitStatus {
         match self {
             &Exited(c) => write!(fmt, "exited with code {}", c),
             &Signaled(sig, false) => {
-                write!(fmt, "killed by signal {}[{}]",
+                write!(fmt, "killed by signal {}[{:?}]",
                     signal_name(sig).unwrap_or("unknown"), sig)
             }
             &Signaled(sig, true) => {
-                write!(fmt, "killed by signal {}[{}] (core dumped)",
+                write!(fmt, "killed by signal {}[{:?}] (core dumped)",
                     signal_name(sig).unwrap_or("unknown"), sig)
             }
         }
     }
 }
 
-fn signal_name(sig: i32) -> Option<&'static str> {
+fn signal_name(sig: Signal) -> Option<&'static str> {
     use nix::sys::signal as S;
     match sig {
         S::SIGABRT => Some("SIGABRT"),
         S::SIGALRM => Some("SIGALRM"),
+        #[cfg(not(any(target_os = "linux", target_os = "android", target_os = "emscripten")))]
         S::SIGEMT  => Some("SIGEMT"),
         S::SIGFPE  => Some("SIGFPE"),
         S::SIGHUP  => Some("SIGHUP"),
